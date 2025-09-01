@@ -1,0 +1,1053 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cottage Cleaning Checklist</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f8f9fa;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            background: white;
+            min-height: 100vh;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            color: white;
+            padding: 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header h1 {
+            font-size: 1.25rem;
+            font-weight: bold;
+        }
+        
+        .header .cycle-info {
+            font-size: 0.875rem;
+            opacity: 0.9;
+            margin-top: 0.25rem;
+        }
+        
+        .cycle-selection {
+            padding: 2rem 1rem;
+            text-align: center;
+            background: white;
+            min-height: 60vh;
+        }
+        
+        .cycle-selection h2 {
+            font-size: 1.5rem;
+            color: #1e293b;
+            margin-bottom: 1rem;
+        }
+        
+        .cycle-selection p {
+            color: #6b7280;
+            margin-bottom: 2rem;
+            font-size: 1rem;
+        }
+        
+        .cycle-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .cycle-select-btn {
+            padding: 1.5rem 2rem;
+            border: none;
+            border-radius: 1rem;
+            font-weight: bold;
+            font-size: 1.1rem;
+            cursor: pointer;
+            min-width: 120px;
+            color: white;
+        }
+        
+        .cycle-a-btn { background: #3b82f6; }
+        .cycle-b-btn { background: #f59e0b; }
+        .cycle-c-btn { background: #ef4444; }
+        
+        .cycle-selector {
+            background: rgba(255,255,255,0.1);
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            display: none;
+            gap: 0.25rem;
+            margin-top: 0.75rem;
+        }
+        
+        .cycle-btn {
+            padding: 0.5rem 0.75rem;
+            border: none;
+            border-radius: 0.375rem;
+            font-weight: bold;
+            cursor: pointer;
+            background: rgba(255,255,255,0.2);
+            color: rgba(255,255,255,0.8);
+            font-size: 0.75rem;
+        }
+        
+        .cycle-btn.active {
+            color: white;
+            background: rgba(255,255,255,0.3);
+        }
+        
+        .section {
+            background: white;
+            margin-bottom: 1rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            overflow: hidden;
+        }
+        
+        .room-header {
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background: #f8fafc;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 1.125rem;
+            font-weight: bold;
+            color: #1e293b;
+        }
+        
+        .room-header:hover {
+            background: #f1f5f9;
+        }
+        
+        .collapse-icon {
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+        
+        .room-content {
+            display: none;
+        }
+        
+        .task-group {
+            padding: 0.75rem;
+        }
+        
+        .task-item {
+            display: flex;
+            align-items: flex-start;
+            padding: 0.75rem;
+            border-bottom: 1px solid #f1f5f9;
+            gap: 1rem;
+        }
+        
+        .task-item:last-child {
+            border-bottom: none;
+        }
+        
+        .task-checkbox {
+            width: 1.25rem;
+            height: 1.25rem;
+            margin-top: 0.125rem;
+            flex-shrink: 0;
+            cursor: pointer;
+        }
+        
+        .task-label {
+            flex: 1;
+            cursor: pointer;
+            user-select: none;
+            font-size: 0.95rem;
+        }
+        
+        .task-label.important {
+            font-weight: 600;
+        }
+        
+        .task-label.completed {
+            text-decoration: line-through;
+            color: #6b7280;
+        }
+        
+        .cycle-task {
+            margin: 0.5rem 0;
+            padding: 0.75rem;
+            border-radius: 0.375rem;
+            border-left: 4px solid;
+            display: none;
+        }
+        
+        .cycle-a { 
+            border-left-color: #3b82f6; 
+            background: #eff6ff; 
+        }
+        .cycle-b { 
+            border-left-color: #f59e0b; 
+            background: #fffbeb; 
+        }
+        .cycle-c { 
+            border-left-color: #ef4444; 
+            background: #fef2f2; 
+        }
+        
+        .hidden-until-start {
+            display: none;
+        }
+        
+        .instruction {
+            background: #fef3c7;
+            color: #92400e;
+            padding: 0.75rem;
+            margin: 0.5rem 0;
+            border-radius: 0.375rem;
+            border-left: 4px solid #f59e0b;
+        }
+        
+        .footer {
+            position: sticky;
+            bottom: 0;
+            background: white;
+            border-top: 1px solid #e5e7eb;
+            padding: 1rem;
+            box-shadow: 0 -2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .completion-box {
+            text-align: center;
+            padding: 1.25rem;
+            border-radius: 0.75rem;
+            margin-bottom: 0.75rem;
+            border: 2px solid;
+        }
+        
+        .footer-info {
+            text-align: center;
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                max-width: 100%;
+            }
+            
+            .header {
+                padding: 0.75rem;
+            }
+            
+            .cycle-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .cycle-select-btn {
+                width: 100%;
+                max-width: 200px;
+            }
+            
+            .task-item {
+                padding: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>🏠 Cottage Cleaning Checklist</h1>
+            <div class="cycle-info">
+                <span id="cycleText">Ready to Start</span>
+            </div>
+            <div class="cycle-selector" id="cycleSelectorDiv">
+                <button class="cycle-btn cycle-a active" onclick="setCycle('A')">A</button>
+                <button class="cycle-btn cycle-b" onclick="setCycle('B')">B</button>
+                <button class="cycle-btn cycle-c" onclick="setCycle('C')">C</button>
+            </div>
+        </header>
+        
+        <!-- Cycle Selection Screen -->
+        <div id="cycleSelectionScreen" class="cycle-selection">
+            <h2>🚀 Start Your Clean</h2>
+            <p>Select which cleaning cycle this is:</p>
+            <div class="cycle-buttons">
+                <button class="cycle-select-btn cycle-a-btn" onclick="selectCycle('A')">
+                    <div>🔵 A Cycle</div>
+                    <small style="opacity: 0.8; font-weight: normal;">Standard + TV, Lampshades</small>
+                </button>
+                <button class="cycle-select-btn cycle-b-btn" onclick="selectCycle('B')">
+                    <div>🟡 B Cycle</div>
+                    <small style="opacity: 0.8; font-weight: normal;">Standard + Deep Clean</small>
+                </button>
+                <button class="cycle-select-btn cycle-c-btn" onclick="selectCycle('C')">
+                    <div>🔴 C Cycle</div>
+                    <small style="opacity: 0.8; font-weight: normal;">Standard + Deep + Move Furniture</small>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Main Content (Hidden Initially) -->
+        <div id="mainContent" class="hidden-until-start">
+            
+            <!-- Living Room -->
+            <div class="section">
+                <div class="room-header" onclick="toggleRoom('living')">
+                    <span>🛋️ Living Room</span>
+                    <span class="collapse-icon" id="living-icon">▼</span>
+                </div>
+                <div class="room-content" id="living-content">
+                    <div class="task-group">
+                        <div class="task-item">
+                            <input type="checkbox" class="task-checkbox" id="living1" onchange="updateProgress()">
+                            <label for="living1" class="task-label">Hoover and mop floors, hoover rug (including under rug)</label>
+                        </div>
+                        <div class="task-item">
+                            <input type="checkbox" class="task-checkbox" id="living2" onchange="updateProgress()">
+                            <label for="living2" class="task-label">Dust all shelves, ornaments, and curtain poles</label>
+                        </div>
+                        <div class="task-item">
+                            <input type="checkbox" class="task-checkbox" id="living3" onchange="updateProgress()">
+                            <label for="living3" class="task-label">Tidy toy boxes, cushions, throws (dark grey sofa throw neat)</label>
+                        </div>
+                        <div class="task-item">
+                            <input type="checkbox" class="task-checkbox" id="living4" onchange="updateProgress()">
+                            <label for="living4" class="task-label">Clean windows, window sills, and coffee table (top and underneath)</label>
+                        </div>
+                        <div class="task-item">
+                            <input type="checkbox" class="task-checkbox" id="living5" onchange="updateProgress()">
+                            <label for="living5" class="task-label">Check fireplace, sweep if used, tidy surround and leaflet shelf</label>
+                        </div>
+                        <div class="task-item">
+                            <input type="checkbox" class="task-checkbox" id="living6" onchange="updateProgress()">
+                            <label for="living6" class="task-label">Remove cobwebs from ceilings, beams, lights</label>
+                        </div>
+                        <div class="task-item">
+                            <input type="checkbox" class="task-checkbox" id="living7" onchange="updateProgress()">
+                            <label for="living7" class="task-label">Check under/behind sofas, hoover if dusty, check for marks needing removal</label>
+                        </div>
+                        <div class="task-item">
+                            <input type="checkbox" class="task-checkbox" id="living8" onchange="updateProgress()">
+                            <label for="living8" class="task-label">Final check - everything looks perfect and guest-ready</label>
+                        </div>
+                    </div>
+                    
+                    <!-- Living Room Cycle Tasks -->
+                    <div class="cycle-task cycle-a" id="living-a">
+                        <div style="background: #eff6ff; border-left: 4px solid #3b82f6; margin: 0; padding: 0.75rem; font-weight: bold;">🛋️ Living Room - A Cycle</div>
+                        <div class="task-item">
+                            <input type="checkbox" class="task-checkbox" id="living-a1" onchange="updateProgress()">
+                            <label for="living-a1" class="task-label">🔵 A: Clean TV screen (streak-free)</label>
+                        </div>
+                        <div class="task-item">
+                            <input type="checkbox" class="task-checkbox" id="living-a2" onchange="updateProgress()">
+                            <label for="living-a2" class="task-label">🔵 A: Clean lampshades</label>
+                        </div>
+                    </div>
+                    
+                    <div class="cycle-task cycle-b" id="living-b">
+                        <div style="background: #fffbeb; border-left: 4px solid #f59e0b; margin: 0; padding: 0.75rem; font-weight: bold;">🛋️ Living Room - B Cycle</div>
+                        <div class="task-item">
+                            <input type="checkbox" class="task-checkbox" id="living-b1" onchange="updateProgress()">
+                            <label for="living-b1" class="task-label">🟡 B: Hoover down the sofa</label>
+                        </div>
+                    </div>
+                    
+                    <div class="cycle-task cycle-c" id="living-c">
+                        <div style="background: #fef2f2; border-left: 4px solid #ef4444; margin: 0; padding: 0.75rem; font-weight: bold;">🛋️ Living Room - C Cycle</div>
+                        <div class="task-item">
+                            <input type="checkbox" class="task-checkbox" id="living-c1" onchange="updateProgress()">
+                            <label for="living-c1" class="task-label">🔴 C: Deep clean under sofas (move fully)</label>
+                        </div>
+                        <div class="task-item">
+                            <input type="checkbox" class="task-checkbox" id="living-c2" onchange="updateProgress()">
+                            <label for="living-c2" class="task-label">🔴 C: Check and clean behind sofas</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dining Room -->
+            <div class="section">
+                <div class="room-header" onclick="toggleRoom('dining')">
+                    <span>🍽️ Dining Room</span>
+                    <span class="collapse-icon" id="dining-icon">▼</span>
+                </div>
+                <div class="room-content" id="dining-content">
+                    <div class="task-group">
+                        <div class="task-item">
+                            <input type="checkbox" class="task-checkbox" id="dining1" onchange="updateProgress()">
+                            <label for="dining1" class="task-label">Clean and polish dining table, clean under table</label>
+                        </div>
+                        <div class="task-item">
+                            <input type="checkbox" class="task-checkbox" id="dining2" onchange="updateProgress()">
+                            <label for="dining2" class="task-label">Check ceiling for cobwebs/spiders, remove, clean shelves</label>
+                        </div>
+                        <div class="task-item">
+                            <input type="checkbox" class="task-checkbox" id="dining3" onchange="updateProgress()">
+                            <label for="dining3" class="task-label">Check drawers and cupboards clean and tidy</label>
+                        </div>
+                        <div class="task-item">
+                            <input type="checkbox" class="task-checkbox" id="dining4" onchange="updateProgress()">
+                            <label for="dining4" class="task-label">Hoover floor fully, hoover and wipe chairs (remove crumbs/food)</label>
+                        </div>
+                    </div>
+                    
+                    <!-- Dining Room Cycle Tasks -->
+                    <div class="cycle-task cycle-a" id="dining-a">
+                        <div style="background: #eff6ff; border-left: 4px solid #3b82f6; margin: 0; padding: 0.75rem; font-weight: bold;">🍽️ Dining Room - A Cycle</div>
+                        <div class="task-item">
+                            <input type="checkbox" class="task-checkbox" id="dining-a1" onchange="updateProgress()">
+                            <label for="dining-a1" class="task-label">🔵 A: Dust radiators</label>
+                        </div>
+                        <div class="task-item">
+                            <input type="checkbox" class="task-checkbox" id="dining-a2" onchange="updateProgress()">
+                            <label for="dining-a2" class="task-label">🔵 A: Wash windows thoroughly</label>
+                        </div>
+                    </div>
+                    
+                    <div class="cycle-task cycle-b" id="dining-b">
+                        <div style="background: #fffbeb; border-left: 4px solid #f59e0b; margin: 0; padding: 0.75rem; font-weight: bold;">🍽️ Dining Room - B Cycle</div>
+                        <div class="task-item">
+                            <input type="checkbox" class="task-checkbox" id="dining-b1" onchange="updateProgress()">
+                            <label for="dining-b1" class="task-label">🟡 B: Clean inside drawers/cupboards</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Kitchen -->
+            <div class="section">
+                <div class="room-header" onclick="toggleRoom('kitchen')">
+                    <span>🍳 Kitchen</span>
+                    <span class="collapse-icon" id="kitchen-icon">▼</span>
+                </div>
+                <div class="room-content" id="kitchen-content">
+                    <div class="task-group">
+                        <div class="task-item">
+                            <input type="checkbox" class="task-checkbox" id="kitchen1" onchange="updateProgress()">
+                            <label for="kitchen1" class="task-label">Empty and clean fridge completely (guest food to storage room, clean/remove shelves, check freezer)</label>
+                        </div>
+                        <div class="task-item">
+                            <input type="checkbox" class="task-checkbox" id="kitchen2" onchange="updateProgress()">
+                            <label for="kitchen2" class="task-label important">Shake toaster crumbs before emptying bins, clean kettle/toaster/microwave (including underneath), clean top of fridge</label>
+                        </div>
+                        <div class="task-item">
+                            <input type="checkbox" class="task-checkbox" id="kitchen3" onchange="updateProgress()">
+                            <label for="kitchen3" class="task-label">Clean hob (mark-free), all surfaces, taps, tiles, sink, underneath sink</label>
+                        </div>
+                        <div class="task-item">
+                            <input type="checkbox" class="task-checkbox" id="kitchen4" onchange="updateProgress()">
+                            <label for="kitchen4" class="task-label">Clean utensil holder inside and utensils, ensure utensils in holder (not drawers), tidy condiment corner</label>
+                        </div>
+                        <div class="task-item">
+                            <input type="checkbox" class="task-checkbox" id="kitchen5" onchange="updateProgress()">
+                            <label for="kitchen5" class="task-label">Check dustpan/brush and guest cleaning materials under sink</label>
+                        </div>
+                        <div class="task-item">
+                            <input type="checkbox" class="task-checkbox" id="kitchen6" onchange="updateProgress()">
+                            <label for="kitchen6" class="task-label">Empty food waste and clean caddy, empty bin with new bag, clean under bins</label>
+                        </div>
+                        <div class="task-item">
+                            <input type="checkbox" class="task-checkbox" id="kitchen7" onchange="updateProgress()">
+                            <label for="kitchen7" class="task-label">Clean oven (wipe every time; deeper clean every 3rd clean)</label>
+                        </div>
+                        <div class="task-item">
+                            <input type="checkbox" class="task-checkbox" id="kitchen8" onchange="updateProgress()">
+                            <label for="kitchen8" class="task-label important">Check cupboards: 6 of everything, report missing to Anna</label>
+                        </div>
+                        <div class="task-item">
+                            <input type="checkbox" class="task-checkbox" id="kitchen9" onchange="updateProgress()">
+                            <label for="kitchen9" class="task-label">Mop floor including steps to outside door, bolt door, hoover entrance matting</label>
+                        </div>
+                        <div class="task-item">
+                            <input type="checkbox" class="task-checkbox" id="kitchen10" onchange="updateProgress()">
+                            <label for="kitchen10" class="task-label">Check garden for dog mess or rubbish</label>
+                        </div>
+                    </div>
+                    
+                    <!-- Kitchen Stock Checks -->
+                    <div style="border-top: 2px solid #e5e7eb; margin-top: 1rem; padding-top: 1rem;">
+                        <h3 style="font-size: 1rem; font-weight: bold; color: #1e40af; background: #dbeafe; padding: 0.5rem; border-radius: 0.375rem; margin-bottom: 0.5rem;">Stock Checks</h3>
+                        <div class="task-item">
+                            <input type="checkbox" class="task-checkbox" id="stock1" onchange="updateProgress()">
+                            <label for="stock1" class="task-label important">6 eggs on chopping board (with jar of fresh coffee beside them)</label>
+                        </div>
+                        <div class="task-item">
+                            <input type="checkbox" class="task-checkbox" id="stock2" onchange="updateProgress()">
+                            <label for="stock2" class="task-label important">Coffee pot clean (must be dried before lid replaced)</label>
+                        </div>
+                        <div class="task-item">
+                            <input type="checkbox" class="task-checkbox" id="stock3" onchange="updateProgress()">
+                            <label for="stock3" class="task-label">Colour jars on windowsill (coffee, tea, sugar) refilled from storage</label>
+                        </div>
+                        <div class="task-item">
+                            <input type="checkbox" class="task-checkbox" id="stock4" onchange="updateProgress()">
+                            <label for="stock4" class="task-label important">2 pints milk in fridge (refill glass bottle, cover with foil)</label>
+                        </div>
+                        <div class="task-item">
+                            <input type="checkbox" class="task-checkbox" id="stock5" onchange="updateProgress()">
+                            <label for="stock5" class="task-label">Dishwasher tablets topped up</label>
+                        </div>
+                        <div class="task-item">
+                            <input type="checkbox" class="task-checkbox" id="stock6" onchange="updateProgress()">
+                            <label for="stock6" class="task-label important">2 tea towels neatly on oven handle</label>
+                        </div>
+                        <div class="task-item">
+                            <input type="checkbox" class="task-checkbox" id="stock7" onchange="updateProgress()">
+                            <label for="stock7" class="task-label">Sponge at sink (replace when grotty)</label>
+                        </div>
+                        <div class="task-item">
+                            <input type="checkbox" class="task-checkbox" id="stock8" onchange="updateProgress()">
+                            <label for="stock8" class="task-label">Washing-up liquid topped up from bulk Ecover supply</label>
+                        </div>
+                    </div>
+                    
+                    <!-- Kitchen Cycle Tasks -->
+                    <div class="cycle-task cycle-a" id="kitchen-a">
+                        <div style="background: #eff6ff; border-left: 4px solid #3b82f6; margin: 0; padding: 0.75rem; font-weight: bold;">🍳 Kitchen - A Cycle</div>
+                        <div class="task-item">
+                            <input type="checkbox" class="task-checkbox" id="kitchen-a1" onchange="updateProgress()">
+                            <label for="kitchen-a1" class="task-label">🔵 A: Deep oven clean (remove glass fully)</label>
+                        </div>
+                        <div class="task-item">
+                            <input type="checkbox" class="task-checkbox" id="kitchen-a2" onchange="updateProgress()">
+                            <label for="kitchen-a2" class="task-label">🔵 A: Clean large kitchen windowsill</label>
+                        </div>
+                    </div>
+                    
+                    <div class="cycle-task cycle-b" id="kitchen-b">
+                        <div style="background: #fffbeb; border-left: 4px solid #f59e0b; margin: 0; padding: 0.75rem; font-weight: bold;">🍳 Kitchen - B Cycle</div>
+                        <div class="task-item">
+                            <input type="checkbox" class="task-checkbox" id="kitchen-b1" onchange="updateProgress()">
+                            <label for="kitchen-b1" class="task-label">🟡 B: Deep cupboard clean</label>
+                        </div>
+                        <div class="task-item">
+                            <input type="checkbox" class="task-checkbox" id="kitchen-b2" onchange="updateProgress()">
+                            <label for="kitchen-b2" class="task-label">🟡 B: Clean cupboard under stairs</label>
+                        </div>
+                    </div>
+                    
+                    <div class="cycle-task cycle-c" id="kitchen-c">
+                        <div style="background: #fef2f2; border-left: 4px solid #ef4444; margin: 0; padding: 0.75rem; font-weight: bold;">🍳 Kitchen - C Cycle</div>
+                        <div class="task-item">
+                            <input type="checkbox" class="task-checkbox" id="kitchen-c1" onchange="updateProgress()">
+                            <label for="kitchen-c1" class="task-label">🔴 C: Defrost freezer and clean</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hall & Stairs -->
+            <div class="section">
+                <div class="room-header" onclick="toggleRoom('hall')">
+                    <span>🚪 Hall & Stairs</span>
+                    <span class="collapse-icon" id="hall-icon">▼</span>
+                </div>
+                <div class="room-content" id="hall-content">
+                    <div class="task-group">
+                        <div class="task-item">
+                            <input type="checkbox" class="task-checkbox" id="hall1" onchange="updateProgress()">
+                            <label for="hall1" class="task-label">Mop and sweep hall floor (including under bins), sweep and mop stairs</label>
+                        </div>
+                        <div class="task-item">
+                            <input type="checkbox" class="task-checkbox" id="hall2" onchange="updateProgress()">
+                            <label for="hall2" class="task-label">Clean skirting boards (dust free), check window ledges clean, windows closed and clean</label>
+                        </div>
+                        <div class="task-item">
+                            <input type="checkbox" class="task-checkbox" id="hall3" onchange="updateProgress()">
+                            <label for="hall3" class="task-label">Tie curtains properly, check walls for dirty marks and clean if needed</label>
+                        </div>
+                        <div class="task-item">
+                            <input type="checkbox" class="task-checkbox" id="hall4" onchange="updateProgress()">
+                            <label for="hall4" class="task-label important">Use correct recycling procedure (glass, paper, cardboard, plastic, tin)</label>
+                        </div>
+                        <div class="task-item">
+                            <input type="checkbox" class="task-checkbox" id="hall5" onchange="updateProgress()">
+                            <label for="hall5" class="task-label">Clean recycling bins and take to collection point</label>
+                        </div>
+                    </div>
+                    
+                    <!-- Hall Cycle Tasks -->
+                    <div class="cycle-task cycle-a" id="hall-a">
+                        <div style="background: #eff6ff; border-left: 4px solid #3b82f6; margin: 0; padding: 0.75rem; font-weight: bold;">🚪 Hall & Stairs - A Cycle</div>
+                        <div class="task-item">
+                            <input type="checkbox" class="task-checkbox" id="hall-a1" onchange="updateProgress()">
+                            <label for="hall-a1" class="task-label">🔵 A: Clean handrails thoroughly</label>
+                        </div>
+                    </div>
+                    
+                    <div class="cycle-task cycle-b" id="hall-b">
+                        <div style="background: #fffbeb; border-left: 4px solid #f59e0b; margin: 0; padding: 0.75rem; font-weight: bold;">🚪 Hall & Stairs - B Cycle</div>
+                        <div class="task-item">
+                            <input type="checkbox" class="task-checkbox" id="hall-b1" onchange="updateProgress()">
+                            <label for="hall-b1" class="task-label">🟡 B: Full cobweb sweep in hall/stairs (use long tool from utility)</label>
+                        </div>
+                    </div>
+                    
+                    <div class="cycle-task cycle-c" id="hall-c">
+                        <div style="background: #fef2f2; border-left: 4px solid #ef4444; margin: 0; padding: 0.75rem; font-weight: bold;">🚪 Hall & Stairs - C Cycle</div>
+                        <div class="task-item">
+                            <input type="checkbox" class="task-checkbox" id="hall-c1" onchange="updateProgress()">
+                            <label for="hall-c1" class="task-label">🔴 C: Wipe skirting boards thoroughly</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bedrooms -->
+            <div class="section">
+                <div class="room-header" onclick="toggleRoom('bedrooms')">
+                    <span>🛏️ Bedrooms (All)</span>
+                    <span class="collapse-icon" id="bedrooms-icon">▼</span>
+                </div>
+                <div class="room-content" id="bedrooms-content">
+                    <div class="task-group">
+                        <div class="task-item">
+                            <input type="checkbox" class="task-checkbox" id="bed1" onchange="updateProgress()">
+                            <label for="bed1" class="task-label">Hoover carpets thoroughly (including stairs to top bedroom), remove carpet marks, wash if needed</label>
+                        </div>
+                        <div class="task-item">
+                            <input type="checkbox" class="task-checkbox" id="bed2" onchange="updateProgress()">
+                            <label for="bed2" class="task-label important">Change ALL bedding fully - remove ALL sheets and bedding every time</label>
+                        </div>
+                        <div class="task-item">
+                            <input type="checkbox" class="task-checkbox" id="bed3" onchange="updateProgress()">
+                            <label for="bed3" class="task-label important">Make beds beautifully: 2 towels each bed, throw at foot, cushions neatly arranged</label>
+                        </div>
+                        <div class="task-item">
+                            <input type="checkbox" class="task-checkbox" id="bed4" onchange="updateProgress()">
+                            <label for="bed4" class="task-label">Clean mirrors, bedside tables, lamps, clean under everything (don't just hoover around)</label>
+                        </div>
+                        <div class="task-item">
+                            <input type="checkbox" class="task-checkbox" id="bed5" onchange="updateProgress()">
+                            <label for="bed5" class="task-label">Check under beds, behind beds, under furniture (all way to wall)</label>
+                        </div>
+                        <div class="task-item">
+                            <input type="checkbox" class="task-checkbox" id="bed6" onchange="updateProgress()">
+                            <label for="bed6" class="task-label">Cupboards and drawers empty (remove ALL guest items to utility room, tell Anna)</label>
+                        </div>
+                        <div class="task-item">
+                            <input type="checkbox" class="task-checkbox" id="bed7" onchange="updateProgress()">
+                            <label for="bed7" class="task-label important">Front bedroom: Plug in/switch on white heater box (Hero unit) - often unplugged by guests</label>
+                        </div>
+                        <div class="task-item">
+                            <input type="checkbox" class="task-checkbox" id="bed8" onchange="updateProgress()">
+                            <label for="bed8" class="task-label">Garden room: Hoover sheepskin rug and under it, hairdryer on 3rd shelf, vase on 2nd, basket on 1st and 4th</label>
+                        </div>
+                        <div class="task-item">
+                            <input type="checkbox" class="task-checkbox" id="bed9" onchange="updateProgress()">
+                            <label for="bed9" class="task-label">Check all rooms generally, report anything that looks dodgy</label>
+                        </div>
+                    </div>
+                    
+                    <!-- Bedroom Cycle Tasks -->
+                    <div class="cycle-task cycle-a" id="bed-a">
+                        <div style="background: #eff6ff; border-left: 4px solid #3b82f6; margin: 0; padding: 0.75rem; font-weight: bold;">🛏️ Bedrooms (All) - A Cycle</div>
+                        <div class="task-item">
+                            <input type="checkbox" class="task-checkbox" id="bed-a1" onchange="updateProgress()">
+                            <label for="bed-a1" class="task-label">🔵 A: Clean radiators throughout house</label>
+                        </div>
+                        <div class="task-item">
+                            <input type="checkbox" class="task-checkbox" id="bed-a2" onchange="updateProgress()">
+                            <label for="bed-a2" class="task-label">🔵 A: Clean ledges (e.g. by Velux window in top bedroom)</label>
+                        </div>
+                    </div>
+                    
+                    <div class="cycle-task cycle-b" id="bed-b">
+                        <div style="background: #fffbeb; border-left: 4px solid #f59e0b; margin: 0; padding: 0.75rem; font-weight: bold;">🛏️ Bedrooms (All) - B Cycle</div>
+                        <div class="task-item">
+                            <input type="checkbox" class="task-checkbox" id="bed-b1" onchange="updateProgress()">
+                            <label for="bed-b1" class="task-label">🟡 B: Dust ornamental fireplace (front bedroom)</label>
+                        </div>
+                        <div class="task-item">
+                            <input type="checkbox" class="task-checkbox" id="bed-b2" onchange="updateProgress()">
+                            <label for="bed-b2" class="task-label">🟡 B: Hoover inside cupboards occasionally</label>
+                        </div>
+                    </div>
+                    
+                    <div class="cycle-task cycle-c" id="bed-c">
+                        <div style="background: #fef2f2; border-left: 4px solid #ef4444; margin: 0; padding: 0.75rem; font-weight: bold;">🛏️ Bedrooms (All) - C Cycle</div>
+                        <div class="task-item">
+                            <input type="checkbox" class="task-checkbox" id="bed-c1" onchange="updateProgress()">
+                            <label for="bed-c1" class="task-label">🔴 C: Cobweb sweep in all rooms</label>
+                        </div>
+                        <div class="task-item">
+                            <input type="checkbox" class="task-checkbox" id="bed-c2" onchange="updateProgress()">
+                            <label for="bed-c2" class="task-label">🔴 C: Clean tops of cupboards</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bathroom -->
+            <div class="section">
+                <div class="room-header" onclick="toggleRoom('bathroom')">
+                    <span>🚿 Bathroom</span>
+                    <span class="collapse-icon" id="bathroom-icon">▼</span>
+                </div>
+                <div class="room-content" id="bathroom-content">
+                    <div class="task-group">
+                        <div class="task-item">
+                            <input type="checkbox" class="task-checkbox" id="bath1" onchange="updateProgress()">
+                            <label for="bath1" class="task-label">Clean toilet thoroughly, including brush holder (empty and clean), empty and clean bin</label>
+                        </div>
+                        <div class="task-item">
+                            <input type="checkbox" class="task-checkbox" id="bath2" onchange="updateProgress()">
+                            <label for="bath2" class="task-label important">Ensure toilet paper: 1 roll on holder (sufficient), 2 spare new rolls on shelf</label>
+                        </div>
+                        <div class="task-item">
+                            <input type="checkbox" class="task-checkbox" id="bath3" onchange="updateProgress()">
+                            <label for="bath3" class="task-label">Clean floor completely, clean shelves, sink, taps, plughole</label>
+                        </div>
+                        <div class="task-item">
+                            <input type="checkbox" class="task-checkbox" id="bath4" onchange="updateProgress()">
+                            <label for="bath4" class="task-label">Clean shelf above sink and mirror (no smears)</label>
+                        </div>
+                        <div class="task-item">
+                            <input type="checkbox" class="task-checkbox" id="bath5" onchange="updateProgress()">
+                            <label for="bath5" class="task-label">Clean bath, shower walls, shower glass (inside and outside)</label>
+                        </div>
+                        <div class="task-item">
+                            <input type="checkbox" class="task-checkbox" id="bath6" onchange="updateProgress()">
+                            <label for="bath6" class="task-label important">Scrub lime scale on shower glass (work at it gradually), clean shower controller and fittings</label>
+                        </div>
+                        <div class="task-item">
+                            <input type="checkbox" class="task-checkbox" id="bath7" onchange="updateProgress()">
+                            <label for="bath7" class="task-label">Clean window ledge and window, leave slightly open (¼ way in summer, less in winter)</label>
+                        </div>
+                        <div class="task-item">
+                            <input type="checkbox" class="task-checkbox" id="bath8" onchange="updateProgress()">
+                            <label for="bath8" class="task-label important">Place matching rugs in front of shower, toilet, bath</label>
+                        </div>
+                        <div class="task-item">
+                            <input type="checkbox" class="task-checkbox" id="bath9" onchange="updateProgress()">
+                            <label for="bath9" class="task-label">General check for anything untoward, put ANY guest products in utility room</label>
+                        </div>
+                    </div>
+                    
+                    <!-- Bathroom Cycle Tasks -->
+                    <div class="cycle-task cycle-b" id="bath-b">
+                        <div style="background: #fffbeb; border-left: 4px solid #f59e0b; margin: 0; padding: 0.75rem; font-weight: bold;">🚿 Bathroom - B Cycle</div>
+                        <div class="task-item">
+                            <input type="checkbox" class="task-checkbox" id="bath-b1" onchange="updateProgress()">
+                            <label for="bath-b1" class="task-label">🟡 B: Clean cupboard in bathroom</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Outside Areas Cycle Tasks -->
+            <div class="cycle-task cycle-a" id="outside-a">
+                <div style="background: #eff6ff; border-left: 4px solid #3b82f6; margin: 0; padding: 0.75rem; font-weight: bold;">🌿 Outside Areas - A Cycle</div>
+                <div class="task-item">
+                    <input type="checkbox" class="task-checkbox" id="outside-a1" onchange="updateProgress()">
+                    <label for="outside-a1" class="task-label">🔵 A: Clean outside porch area</label>
+                </div>
+            </div>
+            
+            <div class="cycle-task cycle-c" id="outside-c">
+                <div style="background: #fef2f2; border-left: 4px solid #ef4444; margin: 0; padding: 0.75rem; font-weight: bold;">🌿 Outside Areas - C Cycle</div>
+                <div class="task-item">
+                    <input type="checkbox" class="task-checkbox" id="outside-c1" onchange="updateProgress()">
+                    <label for="outside-c1" class="task-label">🔴 C: Sweep garden patio</label>
+                </div>
+            </div>
+            
+            <!-- Final Checks -->
+            <div class="section">
+                <div class="room-header" onclick="toggleRoom('final')">
+                    <span>✨ Final General Checks</span>
+                    <span class="collapse-icon" id="final-icon">▼</span>
+                </div>
+                <div class="room-content" id="final-content">
+                    <div class="task-group">
+                        <div class="task-item">
+                            <input type="checkbox" class="task-checkbox" id="final1" onchange="updateProgress()">
+                            <label for="final1" class="task-label">Check walls, furniture, carpets for marks, clean or flag to Anna</label>
+                        </div>
+                        <div class="task-item">
+                            <input type="checkbox" class="task-checkbox" id="final2" onchange="updateProgress()">
+                            <label for="final2" class="task-label important">Ensure everything looks "guest ready" - cushions straight, throws neat, no smears, no clutter</label>
+                        </div>
+                        <div class="task-item">
+                            <input type="checkbox" class="task-checkbox" id="final3" onchange="updateProgress()">
+                            <label for="final3" class="task-label important">Reset cottage so it looks perfect on entry, switch on necessary appliances (Hero heater)</label>
+                        </div>
+                        <div class="task-item">
+                            <input type="checkbox" class="task-checkbox" id="final4" onchange="updateProgress()">
+                            <label for="final4" class="task-label">All bins emptied with new bags, all recycling taken out and sorted correctly</label>
+                        </div>
+                        <div class="task-item">
+                            <input type="checkbox" class="task-checkbox" id="final5" onchange="updateProgress()">
+                            <label for="final5" class="task-label">Report missing/broken items immediately, note any issues for Anna</label>
+                        </div>
+                        <div class="task-item">
+                            <input type="checkbox" class="task-checkbox" id="final6" onchange="updateProgress()">
+                            <label for="final6" class="task-label">ALL guest items found placed in utility room, Anna informed</label>
+                        </div>
+                        <div class="task-item">
+                            <input type="checkbox" class="task-checkbox" id="final7" onchange="updateProgress()">
+                            <label for="final7" class="task-label">All doors bolted/secured as required</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- General Guidelines -->
+            <div class="section">
+                <div class="room-header" onclick="toggleRoom('guidelines')">
+                    <span>📋 General Guidelines</span>
+                    <span class="collapse-icon" id="guidelines-icon">▼</span>
+                </div>
+                <div class="room-content" id="guidelines-content">
+                    <div class="task-group">
+                        <div class="instruction">💡 Always apply common sense: if something looks wrong, dirty, or out of place, deal with it</div>
+                        <div class="instruction">🚨 Report issues (damage, missing items, stubborn stains, anything unusual) to Anna immediately</div>
+                        <div class="instruction">✨ Ensure cottage looks tidy, reset, and welcoming for guests</div>
+                        <div class="instruction">📦 Put ALL items left by guests in the utility room and inform Anna</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <footer id="footer" class="footer hidden-until-start">
+            <div class="completion-box" id="completionBox" style="background: #f3f4f6; border-color: #9ca3af;">
+                <div style="font-size: 1.25rem; font-weight: bold; color: #6b7280; margin-bottom: 10px;" id="completionStatus">SELECT CYCLE TO START</div>
+                <div style="color: #374151;" id="completionDate">Choose A, B, or C cycle to begin cleaning</div>
+            </div>
+            <div class="footer-info">
+                Complete all tasks → Screenshot completion confirmation
+            </div>
+        </footer>
+    </div>
+    
+    <script>
+        var currentCycle = 'A';
+        var startTime = null;
+        var cleanStarted = false;
+        
+        function selectCycle(cycle) {
+            currentCycle = cycle;
+            cleanStarted = true;
+            startTime = new Date();
+            
+            // Hide cycle selection screen
+            document.getElementById('cycleSelectionScreen').style.display = 'none';
+            
+            // Show main content and footer
+            document.getElementById('mainContent').classList.remove('hidden-until-start');
+            document.getElementById('footer').classList.remove('hidden-until-start');
+            
+            // Update header
+            var cycleTexts = {
+                'A': 'A Cycle - Blue',
+                'B': 'B Cycle - Orange', 
+                'C': 'C Cycle - Red'
+            };
+            document.getElementById('cycleText').textContent = cycleTexts[cycle];
+            
+            // Show cycle selector in header
+            document.getElementById('cycleSelectorDiv').style.display = 'flex';
+            
+            // Set the cycle and show appropriate tasks
+            setCycle(cycle);
+            
+            // Open first room by default
+            toggleRoom('living');
+            
+            // Update completion status
+            updateCompletionStatus();
+            
+            // Scroll to top
+            window.scrollTo(0, 0);
+        }
+        
+        function setCycle(cycle) {
+            currentCycle = cycle;
+            
+            // Update header
+            var cycleTexts = {
+                'A': 'A Cycle - Blue',
+                'B': 'B Cycle - Orange',
+                'C': 'C Cycle - Red'
+            };
+            document.getElementById('cycleText').textContent = cycleTexts[cycle];
+            
+            // Update mini selector buttons
+            var buttons = document.querySelectorAll('.cycle-btn');
+            for (var i = 0; i < buttons.length; i++) {
+                buttons[i].classList.remove('active');
+            }
+            document.querySelector('.cycle-btn.cycle-' + cycle.toLowerCase()).classList.add('active');
+            
+            // Show/hide cycle tasks - use simple approach
+            var cycleTasks = document.querySelectorAll('.cycle-task');
+            for (var i = 0; i < cycleTasks.length; i++) {
+                var task = cycleTasks[i];
+                if (task.classList.contains('cycle-' + cycle.toLowerCase())) {
+                    task.style.display = 'block';
+                } else {
+                    task.style.display = 'none';
+                }
+            }
+            
+            updateProgress();
+        }
+        
+        function toggleRoom(roomId) {
+            var content = document.getElementById(roomId + '-content');
+            var icon = document.getElementById(roomId + '-icon');
+            
+            if (!content || !icon) return;
+            
+            // Close all other rooms
+            var allContents = document.querySelectorAll('.room-content');
+            var allIcons = document.querySelectorAll('.collapse-icon');
+            
+            for (var i = 0; i < allContents.length; i++) {
+                if (allContents[i].id !== roomId + '-content') {
+                    allContents[i].style.display = 'none';
+                }
+            }
+            
+            for (var i = 0; i < allIcons.length; i++) {
+                if (allIcons[i].id !== roomId + '-icon') {
+                    allIcons[i].textContent = '▼';
+                }
+            }
+            
+            // Toggle this room
+            if (content.style.display === 'block') {
+                content.style.display = 'none';
+                icon.textContent = '▼';
+            } else {
+                content.style.display = 'block';
+                icon.textContent = '▲';
+            }
+        }
+        
+        function updateProgress() {
+            // Update completed task styling
+            var checkboxes = document.querySelectorAll('input[type="checkbox"]');
+            for (var i = 0; i < checkboxes.length; i++) {
+                var cb = checkboxes[i];
+                var label = document.querySelector('label[for="' + cb.id + '"]');
+                if (label) {
+                    if (cb.checked) {
+                        label.classList.add('completed');
+                    } else {
+                        label.classList.remove('completed');
+                    }
+                }
+            }
+            
+            updateCompletionStatus();
+        }
+        
+        function updateCompletionStatus() {
+            var statusElement = document.getElementById('completionStatus');
+            var completionBox = document.getElementById('completionBox');
+            var dateElement = document.getElementById('completionDate');
+            
+            if (!cleanStarted) {
+                statusElement.textContent = 'SELECT CYCLE TO START';
+                completionBox.style.background = '#f3f4f6';
+                completionBox.style.borderColor = '#9ca3af';
+                statusElement.style.color = '#6b7280';
+                dateElement.innerHTML = 'Choose A, B, or C cycle to begin cleaning';
+                return;
+            }
+            
+            // Count visible checkboxes
+            var visibleCheckboxes = [];
+            var allCheckboxes = document.querySelectorAll('input[type="checkbox"]');
+            
+            for (var i = 0; i < allCheckboxes.length; i++) {
+                var cb = allCheckboxes[i];
+                var cycleParent = cb.closest('.cycle-task');
+                var isVisible = true;
+                
+                if (cycleParent && cycleParent.style.display === 'none') {
+                    isVisible = false;
+                }
+                
+                if (isVisible) {
+                    visibleCheckboxes.push(cb);
+                }
+            }
+            
+            var checkedCount = 0;
+            for (var i = 0; i < visibleCheckboxes.length; i++) {
+                if (visibleCheckboxes[i].checked) {
+                    checkedCount++;
+                }
+            }
+            
+            var totalCount = visibleCheckboxes.length;
+            
+            var startTimeStr = startTime.toLocaleTimeString('en-GB', {
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+            
+            if (checkedCount === totalCount && totalCount > 0) {
+                // Clean complete
+                statusElement.textContent = 'CLEAN COMPLETE ✅';
+                completionBox.style.background = '#f0fdf4';
+                completionBox.style.borderColor = '#22c55e';
+                statusElement.style.color = '#15803d';
+                
+                var endTime = new Date();
+                var endTimeStr = endTime.toLocaleTimeString('en-GB', {
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+                var dateStr = endTime.toLocaleDateString('en-GB', {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+                
+                dateElement.innerHTML = '<strong>Date:</strong> ' + dateStr + '<br>' +
+                    '<strong>Started:</strong> ' + startTimeStr + ' | <strong>Completed:</strong> ' + endTimeStr + '<br>' +
+                    '<div style="color: #6b7280; font-size: 0.875rem; margin-top: 10px;">📸 Take a screenshot of this completion confirmation</div>';
+            } else {
+                // Clean in progress
+                statusElement.textContent = 'CLEAN IN PROGRESS ⏱️';
+                completionBox.style.background = '#fffbeb';
+                completionBox.style.borderColor = '#f59e0b';
+                statusElement.style.color = '#d97706';
+                
+                var dateStr = startTime.toLocaleDateString('en-GB', {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+                
+                dateElement.innerHTML = '<strong>Date:</strong> ' + dateStr + '<br>' +
+                    '<strong>Started:</strong> ' + startTimeStr + '<br>' +
+                    '<strong>Progress:</strong> ' + checkedCount + '/' + totalCount + ' tasks completed';
+            }
+        }
+        
+        // Initialize
+        updateCompletionStatus();
+    </script>
+</body>
+</html>
